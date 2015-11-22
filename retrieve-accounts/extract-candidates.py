@@ -46,10 +46,17 @@ def xmltoDatabase():
             name = " ".join(line.text.strip().split(" ")[2:][:-1])
             if "Independiente" in name:
                 party = "Independiente"
+        elif line.text[0] in "0123456789" and line.text == line.text.upper():
+            party = line.text.split("(")[0]
+            party = " ".join(party.strip().split(" ")[1:])
+            if "(" in line.text:
+                initials = line.text.strip().split("(")[1][:-1]
+            else:
+                initials = ""
         else:
             name = 0
         if line.text[:8] == "Suplente":
-            if line.text[:-1] == ":":  
+            if line.text[-1] == ":":  
                 substitute = True
             else:
                 continue

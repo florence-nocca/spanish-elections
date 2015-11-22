@@ -67,7 +67,7 @@ def xmltoDatabase():
             candidates.write(('"%s","%s","%s","%s","%s","%s","%s"\n') % (name, sex, election_type, district, party, initials, position))
             
 def checkParties(party):
-    tab = [u"C's",u"ERC",u"IU",u"UNIO.CAT",u"PNV",u"PODEMOS",u"PP",u"PS",u"UPyD"]
+    tab = [u"C's",u"C´s",u"EN COMÚ",u"ERC",u"EUPV",u"EH Bildu",u"IU",u"UNIO.CAT",u"PNV",u"PODEMOS",u"PP",u"PS",u"UPyD"]
     for line in tab:
         if line in party:
             return True

@@ -35,7 +35,9 @@ def xmltoDatabase():
             substitute = False
             if "(" in line.text:
                 initials = line.text.strip().split("(")[1][:-1]
-        if pq(line).attr("class")[:7] == "parrafo" and line.text[0] in "0123456789":
+            else:
+                initials = ""
+        if pq(line).attr("class")[:7] == "parrafo" and line.text[0] in "0123456789" and line.text != line.text.upper():
             position = line.text.strip().split(" ")[0][:-1]
             if line.text.split(" ")[1] == "Don":
                 sex = 0
@@ -44,8 +46,13 @@ def xmltoDatabase():
             name = " ".join(line.text.strip().split(" ")[2:][:-1])
             if "Independiente" in name:
                 party = "Independiente"
-        if line.text[:8] == "Suplente": 
-            substitute = True
+        else:
+            name = 0
+        if line.text[:8] == "Suplente":
+            if line.text[:-1] == ":":  
+                substitute = True
+            else:
+                continue
         # writing informations in database
         if substitute == True:
             name = 0

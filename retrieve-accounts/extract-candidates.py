@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-# Paquets
+# Packages
 import codecs
 from pyquery import PyQuery as pq
 
@@ -18,11 +18,12 @@ def xmltoDatabase():
     sex = ""
     substitute = False
 
-# extracting informations
+# Extracting informations
     for line in page("texto p"):
         name = 0
         if not line.text:
             continue
+# Differentiating section titles from candidates' name
         if line.text[:5] == "JUNTA":
             district = " ".join(line.text.strip().split(" ")[3:])
         if line.text[:8] == "CONGRESO":
@@ -37,6 +38,7 @@ def xmltoDatabase():
                 initials = line.text.strip().split("(")[1][:-1]
             else:
                 initials = ""
+        # Extracting informations on candidates (name, sex, list position, party)        
         if pq(line).attr("class")[:7] == "parrafo" and line.text[0] in "0123456789" and line.text != line.text.upper():
             position = line.text.strip().split(" ")[0][:-1]
             if line.text.split(" ")[1] == "Don":
@@ -64,12 +66,13 @@ def xmltoDatabase():
                 substitute = True
             else:
                 continue
-        # writing informations in database
+        # Writing informations in database, putting aside substitutes candidates
         if substitute == True:
             name = 0
         if checkParties(initials) == True and name != 0:
             candidates.write(('"%s","%s","%s","%s","%s","%s","%s"\n') % (name, sex, election_type, district, party, initials, position))
-            
+
+# Keeping only candidates from selected parties 
 def checkParties(party):
     tab = [u"C's",u"C´s",u"EN COMÚ",u"ERC",u"EUPV",u"EH Bildu",u"IU",u"UNIO.CAT",u"PNV",u"PODEMOS",u"PP",u"PS",u"UPyD"]
     for line in tab:

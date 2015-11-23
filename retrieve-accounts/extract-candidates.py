@@ -41,9 +41,13 @@ def xmltoDatabase():
             position = line.text.strip().split(" ")[0][:-1]
             if line.text.split(" ")[1] == "Don":
                 sex = 0
-            else:
+                name = " ".join(line.text.strip().split(" ")[2:][:-1])
+            elif line.text.split(" ")[1] == u"Doña":
                 sex = 1
-            name = " ".join(line.text.strip().split(" ")[1:][:-1])
+                name = " ".join(line.text.strip().split(" ")[2:][:-1])
+            else:
+                sex = ""
+                name = " ".join(line.text.strip().split(" ")[1:][:-1])
             if "Independiente" in name:
                 party = "Independiente"
         elif line.text[0] in "0123456789" and line.text == line.text.upper():

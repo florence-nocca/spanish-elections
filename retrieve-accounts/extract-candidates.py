@@ -4,6 +4,7 @@
 # Packages
 import codecs
 from pyquery import PyQuery as pq
+import re
 
 def xmltoDatabase():
 # Open xml list and future candidates database .csv
@@ -77,7 +78,7 @@ def xmltoDatabase():
         if checkParties(initials) == True and name != "":
             if sex == "":
                 sex = addInformations(name)
-            candidates.write(('"%s","%s","%s","%s","%s","%s","%s"\n') % (name, sex, election_type, district, party, initials, position))
+            candidates.write(('"%s","%s","%s","%s","%s","%s","%s"\n') % (cleanText(name), sex, election_type, district, party, initials, position))
     candidates.close()
 
 
@@ -89,6 +90,7 @@ def checkParties(party):
             return True
     return False
 
+# Adding informations from old database (where sex was specified using Don/Doña)
 def addInformations(name):
     data = codecs.open("candidates-database_old.csv","r","utf-8")
     sex = ""
@@ -101,5 +103,10 @@ def addInformations(name):
             break
     data.close()
     return(sex)
+
+# Removing " from text (to avoid confusion with .csv separators)
+def cleanText(text):
+    text = re.sub('["]', " ", text)
+    return(text)
 
 xmltoDatabase()

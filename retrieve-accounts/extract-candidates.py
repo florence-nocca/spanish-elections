@@ -7,6 +7,7 @@ from pyquery import PyQuery as pq
 
 def xmltoDatabase():
 # Open xml list and future candidates database .csv
+# This is the updated list (nov 24), replacing the candidates-list_old.xml (nov 18) 
     candidates = codecs.open("candidates-database.csv", "w", "utf-8")
     candidates.write(('"%s","%s","%s","%s","%s","%s","%s"\n') % ("name", "sex", "election_type", "district", "party", "initials", "position"))
     page = pq(filename = "candidates-list.xml")
@@ -20,7 +21,7 @@ def xmltoDatabase():
 
 # Extracting informations
     for line in page("texto p"):
-        name = 0
+        name = ""
         if not line.text:
             continue
 # Differentiating section titles from candidates' name
@@ -43,13 +44,13 @@ def xmltoDatabase():
             position = line.text.strip().split(" ")[0][:-1]
             if line.text.split(" ")[1] == "Don":
                 sex = 0
-                name = " ".join(line.text.strip().split(" ")[2:][:-1])
+                name = " ".join(line.text.strip().split(" ")[2:])[:-1]
             elif line.text.split(" ")[1] == u"Doña":
                 sex = 1
-                name = " ".join(line.text.strip().split(" ")[2:][:-1])
+                name = " ".join(line.text.strip().split(" ")[2:])[:-1]
             else:
                 sex = ""
-                name = " ".join(line.text.strip().split(" ")[1:][:-1])
+                name = " ".join(line.text.strip().split(" ")[1:])[:-1]
             if "Independiente" in name:
                 party = "Independiente"
         elif line.text[0] in "0123456789" and line.text == line.text.upper():
@@ -60,17 +61,25 @@ def xmltoDatabase():
             else:
                 initials = ""
         else:
-            name = 0
+            name = ""
         if line.text[:8] == "Suplente":
             if line.text[-1] == ":":  
                 substitute = True
             else:
                 continue
+        if "(U" in name:
+            name = name.split("(")[0]
+        if "(" in name.split("(")[:-1]:
+            name = " ".join(name.split("(")[:-1])
         # Writing informations in database, putting aside substitutes candidates
         if substitute == True:
-            name = 0
-        if checkParties(initials) == True and name != 0:
+            name = ""
+        if checkParties(initials) == True and name != "":
+            if sex == "":
+                sex = addInformations(name)
             candidates.write(('"%s","%s","%s","%s","%s","%s","%s"\n') % (name, sex, election_type, district, party, initials, position))
+    candidates.close()
+
 
 # Keeping only candidates from selected parties 
 def checkParties(party):
@@ -79,5 +88,18 @@ def checkParties(party):
         if line in party:
             return True
     return False
+
+def addInformations(name):
+    data = codecs.open("candidates-database_old.csv","r","utf-8")
+    sex = ""
+    for line in data:
+        infos = line.strip().split(',')
+        if not name in infos[0]:
+            continue
+        else:
+            sex = infos[1][1:-1]
+            break
+    data.close()
+    return(sex)
 
 xmltoDatabase()

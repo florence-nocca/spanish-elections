@@ -22,7 +22,8 @@ provincias = [l.strip() for l in codecs.open(sys.argv[3])]
 if len(database) != len(accounts):
     print "The database should have one line for each twitter account"
     exit()
-
+    
+print '"name", "sex", "election_type", "party", "initials", "position", "account"'
 # zip permits to associate database and accounts files line by line
 for line, account in zip(database, accounts):
     name,sex,election_type,district,party,initials,position = line.split('","')

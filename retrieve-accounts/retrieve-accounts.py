@@ -53,9 +53,9 @@ def retrieveAccounts():
         for fnames in comb_fnames:
             for lnames in comb_lnames:
                 print " ".join([fnames, lnames, district, party])
-                getTwitters_ddg(" ".join([fnames, lnames, district, party]), 10, handle_list)
+                #getTwitters_ddg(" ".join([fnames, lnames, district, party]), 10, handle_list)
                 getTwitters_Tw(" ".join([fnames, lnames]), 10, handle_list)
-                getTwitters_G(" ".join([fnames, lnames, district, party]), 10, handle_list)
+                # getTwitters_G(" ".join([fnames, lnames, district, party]), 10, handle_list)
                 # Taking a brief break between each search in order not to be ejected by the website
                 time.sleep(3)
         accounts.write (('%s, %s\n') % ((" ".join(names)), handle_list))
@@ -108,7 +108,7 @@ def getTwitters_Tw(query, nbAccounts, out):
     for link in links:
         handle = pq(link).attr("href")
         if "/" in handle:
-            handle = handle.split('/')[:-1]
+            handle = handle.split('/')[-1]
         if handle not in out:
             out.append(handle)
         counter += 1

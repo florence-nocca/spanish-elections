@@ -21,7 +21,6 @@ dictionary = [{"weight":4,  "word":u"El20Decido"},
               {"weight":4,  "word":u"SiSePuede"},
               {"weight":4,  "word":u"ElCambioQueUne"},
               {"weight":4,  "word":u"VotaPorUnFuturoParaLaMayoría"},
-              # {"weight":4,  "word":u"[iI]ndependen[^ ]*"},
               {"weight":4,  "word":u"(Mariano )?Rajoy"}, # parties, candidates
               {"weight":4,  "word":u"Pedro S[aá]nchez"},
               {"weight":4,  "word":u"Pablo Iglesias"},
@@ -37,13 +36,12 @@ dictionary = [{"weight":4,  "word":u"El20Decido"},
               {"weight":4,  "word":u"\W+IU\W+"},
               {"weight":4,  "word":u"\W+PNV\W+"},
               {"weight":4,  "word":u"PODEMOS"},
-              # {"weight":4,  "word":u"PP"},
               {"weight":4,  "word":u"Partido ?Popular"},
               {"weight":4,  "word":u"PSOE"},
               {"weight":4,  "word":u"Unió Democràtica.*Catalunya"},
               {"weight":4,  "word":u"[uU]nio.*[cC]at"},
-              {"weight":4,  "word":u"UPyD"}, # words that can be used in another context
-              {"weight":1,  "word":u"[cC]ongres[^ ]+"}, # institutions
+              {"weight":4,  "word":u"UPyD"},
+              {"weight":1,  "word":u"[cC]ongres[^ ]+"}, # words that can be used in another context
               {"weight":1,  "word":u"[Cc]onstituci[^ ]*"},
               {"weight":1,  "word":u"diputad[^ ]+"},
               {"weight":1,  "word":u"gobierno[^ ]*"},
@@ -53,62 +51,10 @@ dictionary = [{"weight":4,  "word":u"El20Decido"},
               {"weight":1,  "word":u"[Pp]resident[^ ]*"},
               {"weight":1,  "word":u"[rR]eferéndum"},
               {"weight":1,  "word":u"[sS]enad[^ ]+"},
-              {"weight":1,  "word":u"[cC]ampaña"}, # elections, specific context
+              {"weight":1,  "word":u"[cC]ampaña"},
               {"weight":1,  "word":u"elecci[^ ]+"},
               {"weight":1,  "word":u"electoral[^ ]*"}
 ]
-
-# dictionary = [{"weight":6,  "word":u"[cC]ongres[^ ]+"}, # institutions
-#               {"weight":6,  "word":u"[Cc]onstituci[^ ]*"},
-#               {"weight":6,  "word":u"diputad[^ ]+"},
-#               {"weight":6,  "word":u"gobierno[^ ]*"},
-#               {"weight":6,  "word":u"impuestos"},
-#               {"weight":6,  "word":u"presupuestos"},
-#               {"weight":6,  "word":u"[Pp]arlament[^ ]*"},
-#               {"weight":6,  "word":u"[Pp]resident[^ ]*"},
-#               {"weight":6,  "word":u"[rR]eferéndum"},
-#               {"weight":6,  "word":u"[sS]enad[^ ]+"},
-#               {"weight":4,  "word":u"[cC]ampaña"}, # elections, specific context
-#               {"weight":4,  "word":u"elecci[^ ]+"},
-#               {"weight":4,  "word":u"electoral[^ ]*"},
-#               {"weight":4,  "word":u"El20Decido"},
-#               {"weight":4,  "word":u"EspañaEnSerio"},
-#               {"weight":4,  "word":u"Unpaiscontigo"},
-#               {"weight":4,  "word":u"Un6Dcontigo"},
-#               {"weight":4,  "word":u"SiSePuede"},
-#               {"weight":4,  "word":u"[iI]ndependen[^ ]*"},
-#               {"weight":4,  "word":u"(Mariano )?Rajoy"}, # parties, candidates
-#               {"weight":4,  "word":u"Pedro S[aá]nchez"},
-#               {"weight":4,  "word":u"Pablo Iglesias"},
-#               {"weight":4,  "word":u"Albert[-_ ]Rivera"},
-#               {"weight":4,  "word":u"20-?D"},
-#               {"weight":4,  "word":u"Ciudadanos"},
-#               {"weight":4,  "word":u"C'?s"},
-#               {"weight":4,  "word":u"\W+CUP\W+"},
-#               {"weight":4,  "word":u"EN COMÚ"},
-#               {"weight":4,  "word":u"\W+ERC\W+"},
-#               {"weight":4,  "word":u"EUPV"},
-#               {"weight":4,  "word":u"EH Bildu"},
-#               {"weight":4,  "word":u"\W+IU\W+"},
-#               {"weight":4,  "word":u"PNV"},
-#               {"weight":4,  "word":u"PODEMOS"},
-#               {"weight":4,  "word":u"PP"},
-#               {"weight":4,  "word":u"Partido ?Popular"},
-#               {"weight":4,  "word":u"PS[^ ]+"},
-#               {"weight":4,  "word":u"Unió Democràtica.*Catalunya"},
-#               {"weight":4,  "word":u"[uU]nio.*[cC]at"},
-#               {"weight":4,  "word":u"UPyD"},
-#               {"weight":2,  "word":u"\W+Rivera\W+"}, # words that can be used in another context
-#               {"weight":2,  "word":u"[Cc]andidat[^ ]*"},
-#               {"weight":2,  "word":u"[dD]ebate"},
-#               {"weight":2,  "word":u"[cC][aA][mM][bB][iI][^ ]+"},
-#               {"weight":2,  "word":u"ciudadan[^ ]+"},
-#               {"weight":2,  "word":u"democr.{2},}"},
-#               {"weight":2,  "word":u"derecha"},
-#               {"weight":2,  "word":u"izquierda"},
-#               {"weight":2,  "word":u"[Pp]rograma"},
-#               {"weight":2,  "word":u"[pP]ol.tic[^ ]+"}]
-
 def selectAccounts(skipBeginning = False):
     cache = codecs.open("datafiles/cache_tweets.txt", "a+", "utf-8")
     data = codecs.open("datafiles/accounts_to_select.txt", "r", "utf-8")
@@ -124,10 +70,7 @@ def selectAccounts(skipBeginning = False):
     counter = 0
     i = 100
     for line in data:
-        # i -= 1
-        # if i == 0:
-        #     break
-        infos = line.strip().split(",")
+         infos = line.strip().split(",")
         if len(infos) == 2:
             continue
         name = infos[0]
@@ -139,7 +82,7 @@ def selectAccounts(skipBeginning = False):
                 continue
             tweets = retrieveTweets(pseudo, cache)
             total, scorePolitisation, scorePseudo = getScore(name, pseudo, tweets)
-            # Not good enough
+            # Threshold
             if scorePolitisation < 50 or scorePseudo < 40:
                 continue
 
@@ -254,7 +197,6 @@ def getScore(name, pseudo, tweets, politicThreshold = 20):
     if scoreTweets > politicThreshold:
         scorePseudo = getScorePseudo(name, pseudo)
         scoreTotal = (scoreTweets + scorePseudo) / 2.
-        # print "%s(%s): total %d%%, %d%% politicized, name matching at %d%%" % (name, pseudo, scoreTotal, scoreTweets, scorePseudo)
     return scoreTotal, scoreTweets, scorePseudo
 
 def getScoreTweets(tweets):
@@ -281,17 +223,6 @@ def getScorePseudo(name, pseudo):
             return 0
 
     return strMetric.percentage(" ".join(name), pseudo)
-
-    # # Generate combinations of all words in name
-    # comb_names = []
-    # for n in range(1, len(name) + 1):
-    #     for comb in itertools.combinations(name, n):
-    #         comb_names.append("".join(comb))
-
-    # for comb_name in comb_names:
-    #     percentage = max(percentage, lev.percentage(comb_name, pseudo))
-    # # print "%s x %s: Lev:%.2f, New Metric: %.2f" % (" ".join(name), pseudo, percentage, strMetric.percentage(" ".join(name), pseudo))
-    # return percentage
 
 def cleanText(s):
 # Removes accents, deletes numbers and special characters, turns all characters to lowercase

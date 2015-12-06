@@ -1,3 +1,6 @@
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
+
 def mergeFiles():
     # Remove particles and parenthesis in names
     def cleanNames(names):

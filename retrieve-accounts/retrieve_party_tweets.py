@@ -23,10 +23,10 @@ def shouldRetrieve(pseudoToCheck):
         fields = line.split(',')
         pseudo = fields[1][1:-1]
         if pseudo.lower() == pseudoToCheck.lower():
-            oneDay = 60 * 60 * 24
+            halfDay = 60 * 60 * 12
             timeElapsed = int(time.time()) - int(fields[6][1:-1])
             tweets.close()
-            return timeElapsed > oneDay
+            return timeElapsed > halfDay
     tweets.close()
     return True
 

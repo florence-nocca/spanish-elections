@@ -11,7 +11,7 @@ import os, os.path
 
 def shouldRetrieve(pseudoToCheck):
     try:
-        if os.stat("tweets_generales.csv").st_size == 0:
+        if os.stat("datafiles/tweets_generales.csv").st_size == 0:
             print "return because file empty"
             return True
     except:
@@ -99,6 +99,10 @@ def retrievePages(databaseLine, name, pseudo, date_min = "", date_max = ""):
     # Retrieve informations about the candidate
     page = pq("https://twitter.com/" + pseudo, headers={'Accept-Language': 'en-US,en;q=0.5'})
     writeAccounts(page, databaseLine, pseudo)
+    protection = page("p.ProtectedTimeline-explanation")
+    if protection and "Only confirmed followers" in protection.text():
+        print "Tweets are protected"
+        return
     ret = retrieveTweets(name, pseudo, page, timestamp_min, timestamp_max, 0)
     if len(ret) == 0:
         t = int(time.time())
@@ -111,6 +115,7 @@ def retrieveTweets(name, pseudo, page, timestamp_min, timestamp_max, timestamp_o
         css = "div.stream div.tweet"
     else:
         css = "div.tweet"
+    
     tweets = page(css)
     params = ""
     tweet_id = ""
@@ -123,10 +128,10 @@ def retrieveTweets(name, pseudo, page, timestamp_min, timestamp_max, timestamp_o
         tweet_pseudo = tweetdom("span.username").eq(0).text()
 
         # If tweet is a retweet, its timestamp is modified in order for the program to continue
-        if tweet_pseudo.lower() == '@ ' + pseudo.lower():
-            timestamp = int(tweetdom("span._timestamp").attr("data-time"))
-        else:
-            timestamp = timestamp_old
+        timestamp = int(tweetdom("span._timestamp").attr("data-time"))
+        if tweet_pseudo.lower() != '@ ' + pseudo.lower():
+            if timestamp <= timestamp_min or timestamp >= timestamp_max:
+                timestamp = timestamp_old
 
         # Retrieve page's last tweet id to create next page's url later
         tweet_id = tweetdom.attr("data-item-id")
@@ -151,7 +156,11 @@ def retrieveTweets(name, pseudo, page, timestamp_min, timestamp_max, timestamp_o
     base = "https://twitter.com/i/profiles/show/"
     parameters = "/timeline?include_available_features=1&include_entities=1&max_position="
     url = base + pseudo + parameters + tweet_id
-    req = urllib2.urlopen(url)
+    try:
+        req = urllib2.urlopen(url)
+    except:
+        print "Account no longer exists"
+        return params
     # Read code in utf-8
     obj = unicode(req.read(), "utf-8")
     # Transform next page's json code (obtained using Live HTTP Headers) into html

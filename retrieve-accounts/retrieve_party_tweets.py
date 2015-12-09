@@ -11,7 +11,7 @@ import os, os.path
 
 def shouldRetrieve(pseudoToCheck):
     try:
-        if os.stat("tweets_party_generales.csv").st_size == 0:
+        if os.stat("datafiles/tweets_party_generales.csv").st_size == 0:
             print "return because file empty"
             return True
     except:
@@ -102,7 +102,7 @@ def retrieveTweets(party_name, pseudo, page, timestamp_min, timestamp_max, times
         tweet_pseudo = tweetdom("span.username").eq(0).text()
 
         # If tweet is a retweet, its timestamp is modified in order for the program to continue
-        if tweet_pseudo.lower() == '@ ' + pseudo.lower():
+        if tweet_pseudo.lower() != '@ ' + pseudo.lower():
             timestamp = int(tweetdom("span._timestamp").attr("data-time"))
         else:
             timestamp = timestamp_old

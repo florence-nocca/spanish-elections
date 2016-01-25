@@ -126,7 +126,9 @@ def retrieveTweets(name, pseudo, page, timestamp_min, timestamp_max, timestamp_o
         content = cleanText(tweetdom("p.tweet-text").text())
         tweet_author = cleanText(tweetdom("strong.fullname").eq(0).text())
         tweet_pseudo = tweetdom("span.username").eq(0).text()
-
+        if tweet_pseudo == "":
+            continue
+        
         # If tweet is a retweet, its timestamp is modified in order for the program to continue
         timestamp = int(tweetdom("span._timestamp").attr("data-time"))
         if tweet_pseudo.lower() != '@ ' + pseudo.lower():
@@ -201,5 +203,5 @@ def cleanText(text):
     text = re.sub('[\s,"]', " ", text)
     return text
 
-retrieveFromList("04 Dec 2015")
+retrieveFromList("04 Dec 2015", "20 Dec 2015")
 

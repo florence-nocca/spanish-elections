@@ -1,5 +1,5 @@
 ### Load and clean candidates' data
-tweets = read.csv("candidates_tweets.csv", FALSE, stringsAsFactors = FALSE)
+tweets = read.csv("Databases/candidates_tweets.csv", FALSE, stringsAsFactors = FALSE)
 colnames(tweets) = c("candidate", "pseudo", "author_name", "author_pseudo", "tweet_date", "content", "retrieve_date")
 
 ### Remove URLs, clean # and @
@@ -17,10 +17,10 @@ tweets$content = gsub("[^-_a-zA-Z\u00C0-\u017F0-9#@ ]", "", tweets$content, perl
 tweets$author_pseudo = gsub("@ ", "", tweets$author_pseudo, perl=TRUE)
 
 ### Write a new clean csv database
-write.csv(tweets, file = "clean_ctweets.csv", row.names=FALSE)
+write.csv(tweets, file = "Databases/clean_ctweets.csv", row.names=FALSE)
 
 ### Load parties' data
-ptweets = read.csv("parties_tweets.csv", FALSE, stringsAsFactors = FALSE)
+ptweets = read.csv("Databases/parties_tweets.csv", FALSE, stringsAsFactors = FALSE)
 colnames(ptweets) = c("party", "pseudo", "author_name", "author_pseudo", "tweet_date", "content", "retrieve_date")
 
 ### Remove URLs, clean # and @
@@ -38,10 +38,10 @@ ptweets$content = gsub("[^-_a-zA-Z\u00C0-\u017F0-9#@ ]", "", ptweets$content, pe
 ptweets$author_pseudo = gsub("@ ", "", ptweets$author_pseudo, perl=TRUE)
 
 ### Write a new clean csv database
-write.csv(ptweets, file = "clean_ptweets.csv", row.names=FALSE)
+write.csv(ptweets, file = "Databases/clean_ptweets.csv", row.names=FALSE)
 
 ### Load candidates' database
-data = read.csv("database.csv", FALSE, stringsAsFactors = FALSE)
+data = read.csv("Databases/database.csv", FALSE, stringsAsFactors = FALSE)
 colnames(data) = c("name","sex","election_type","district","party","initials","position")
 
 ### Clean party initials
@@ -68,9 +68,9 @@ data$party = gsub("PODEMOS\\+ IU-UP", "PODEMOS + IU-UP", data$party, perl=TRUE) 
 data$party = gsub("EN COM.*", "PODEMOS", data$party, perl=TRUE) ## uniquify Podemos
 
 ### Write a new clean csv database
-write.table(data, file = "clean_database.csv",row.names=FALSE, na="",col.names=FALSE, sep=",")
+write.table(data, file = "Databases/clean_database.csv",row.names=FALSE, na="",col.names=FALSE, sep=",")
 
-clean_data= read.csv("clean_database.csv", FALSE, stringsAsFactors = FALSE)
+clean_data= read.csv("Databases/clean_database.csv", FALSE, stringsAsFactors = FALSE)
 region = data$district
 
 region[region == "district"] = "region"
@@ -98,4 +98,4 @@ region[region == "ARABA/ÁLAVA" | region == "BIZKAIA" | region == "GIPUZKOA"] = 
 
 clean_data = cbind(clean_data, region)
 
-write.table(clean_data, file = "clean_database.csv",row.names=FALSE, na="",col.names=FALSE, sep=",")
+write.table(clean_data, file = "Databases/clean_database.csv",row.names=FALSE, na="",col.names=FALSE, sep=",")

@@ -82,3 +82,9 @@ vignettes/*.pdf
 
 ## emacs
 *~
+
+## files
+backup/
+data-analysis/Databases/
+data-analysis/Graphs/Graphs-backup/
+datafiles/

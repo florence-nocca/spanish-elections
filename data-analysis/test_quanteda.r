@@ -2,25 +2,20 @@
 library(devtools)
 ## install_github("quanteda", username="kbenoit", dependencies=TRUE, quick=TRUE)
 library(quanteda)
-## install.packages("calibrate")
 library(calibrate)
-## install.packages("stringi")
 library(stringi)
-## install.packages("plotrix")
-## library(plotrix)
-## install.packages("FField")
-## library(FField)
+
 
 ### Load databases
 ## Candidates
-data = read.csv("clean_database.csv", TRUE, stringsAsFactors = FALSE)
+data = read.csv("Databases/clean_database.csv", TRUE, stringsAsFactors = FALSE)
 ## Candidates' tweets
-tweets = read.csv("clean_ctweets.csv", TRUE, stringsAsFactors = FALSE)
+tweets = read.csv("Databases/clean_ctweets.csv", TRUE, stringsAsFactors = FALSE)
 
 ## Parties
-pdata = read.csv("pseudo_parties.csv", TRUE, stringsAsFactors = FALSE)
+pdata = read.csv("Databases/pseudo_parties.csv", TRUE, stringsAsFactors = FALSE)
 ## Parties' tweets
-ptweets = read.csv("clean_ptweets.csv", TRUE, stringsAsFactors = FALSE)
+ptweets = read.csv("Databases/clean_ptweets.csv", TRUE, stringsAsFactors = FALSE)
 
 ### Create a function to extract tweets
 extractTweets = function(x, tweets, member, criteria, tweets_member, data_member)
@@ -134,10 +129,8 @@ party_number = (1:length(list_scores))
 png("/home/noisette/Recherche memoire/Programming/spanish-elections/data-analysis/Graphs/histmodel3.png", width=width * ratio, height=height * ratio, res=dpi)
 par(mfrow=c(3,3), oma = c(0, 0, 10, 0))
 lapply(party_number, function(n) {
-    hist = {hist(unlist(list_scores[n])[unlist(list_scores[n])>0], main=parties[n], xlab="", ylab="")
-            abline(v=pscores[n], col=colors[n])
-        }
-    return(hist)
+    hist(unlist(list_scores[n])[unlist(list_scores[n])>0], main=parties[n], xlab="", ylab="")
+    abline(v=pscores[n], col=colors[n])
 })
 title("Positionnement des candidats sur l'échelle gauche-droite par rapport à leur parti", cex.main = 1.5, outer = TRUE)
 dev.off()
@@ -150,6 +143,26 @@ png("/home/noisette/Recherche memoire/Programming/spanish-elections/data-analysi
 plot(x=cand_scores[cand_scores>0], y=1:len, col=rep(colors, cand_number)[cand_scores>0], xlab="Scores sur une échelle gauche-droite", ylab="Index des candidats", main="Positionnement des candidats par rapport aux partis", cex.main=1.5)
 abline(v=pscores, col=colors)
 legend(x=5.2, y=250, c("Cs", "PSOE", "PP", "UPyD", "Podemos", "IU-UP"), fill=colors)
+dev.off()
+
+### Hist by region
+parties_cand = unlist(lapply(party_list, function(party) return(data[data$initials == party,]$name)))
+
+ordered_regions = data[match(parties_cand[parties_cand %in% tweets$candidate], data$name),]$region
+
+index = rep(1:length(cand_number), cand_number)
+
+dfcand = data.frame(score=cand_scores, party=index, region=ordered_regions)
+
+pdf("/home/noisette/Recherche memoire/Programming/spanish-elections/data-analysis/Graphs/histmodel3byregion.pdf")
+par(mfrow=c(3,3), oma = c(0, 0, 0, 0))
+lapply(party_number, function(n) {
+    lapply(as.character(unique(dfcand[dfcand$party == n & dfcand$score > 0,]$region)), function(region) {
+        minxlim = min(pscores[n],dfcand[dfcand$party == n & dfcand$region == region & dfcand$score>0,]$score)
+        maxxlim = max(pscores[n],dfcand[dfcand$party == n & dfcand$region == region & dfcand$score>0,]$score)
+        hist(dfcand[dfcand$party == n & dfcand$region == region & dfcand$score>0,]$score, main=c(parties[n],region),col.main=colors[n], xlim=c(minxlim,maxxlim), xlab="", ylab="")
+        abline(v=pscores[n], col=colors[n])
+    })})
 dev.off()
 
 ### 4th model: PSOE candidates by region
@@ -277,15 +290,16 @@ lapply(party_number, function(n) {
 })
 dev.off()
 
-png() 
-lapply(party_number, function(n) {
-    x = as.numeric(unlist(sep_parties[n]))[unlist(sep_parties[n])>0]
-    ylength = length(as.numeric(unlist(sep_parties[n]))[as.numeric(unlist(sep_parties[n]))>0])
-    plot = {plot(x=x, y=1:ylength, xlim=c(min(pscores[n],x), max(pscores[n],x)), xlab="Scores sur l'échelle gauche-droite", ylab="Régions", main=parties[n], cex=0, col=colors[n])
-            text(x=x, y=1:ylength, labels=tags[tags[,1] == party_list[n],][,3], cex=0.8, col=colors[n])
-            points(x=pscores[n], y=10, col=colors[n], pch=16, cex=1.5)
-            legend(x=min(x,pscores[n]), y=3.4, pch=16, pt.cex=1.5, legend="score du parti", col=colors[n])
-        }
-    return(plot)
-})
-dev.off()
+## For distinct plots
+## png() 
+## lapply(party_number, function(n) {
+##     x = as.numeric(unlist(sep_parties[n]))[unlist(sep_parties[n])>0]
+##     ylength = length(as.numeric(unlist(sep_parties[n]))[as.numeric(unlist(sep_parties[n]))>0])
+##     plot = {plot(x=x, y=1:ylength, xlim=c(min(pscores[n],x), max(pscores[n],x)), xlab="Scores sur l'échelle gauche-droite", ylab="Régions", main=parties[n], cex=0, col=colors[n])
+##             text(x=x, y=1:ylength, labels=tags[tags[,1] == party_list[n],][,3], cex=0.8, col=colors[n])
+##             points(x=pscores[n], y=10, col=colors[n], pch=16, cex=1.5)
+##             legend(x=min(x,pscores[n]), y=3.4, pch=16, pt.cex=1.5, legend="score du parti", col=colors[n])
+##         }
+##     return(plot)
+## })
+## dev.off()

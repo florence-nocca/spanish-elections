@@ -139,6 +139,7 @@ lapply(party_number, function(n) {
     })})
 dev.off()
 
+### -----------------------------------------------------------------------
 ### Variations (scores on other dimensions)
 ## Set parties' scores
 ## parties = c("Ciudadanos","PSOE","PP","UPyD","Podemos","Izquierda Unida")
@@ -181,3 +182,35 @@ lapply(party_number, function(n) {
 })
 title("Positionnement des candidats sur la décentralisation par rapport à leur parti (0 = favorable, 10 = opposé)", cex.main = 1.5, outer = TRUE)
 dev.off()
+
+
+## Create a data frame containing scores, party, region and area
+index = rep(1:length(cand_number), cand_number)
+dfcand = data.frame(score=cand_scores, party=index, region=ordered_regions)
+
+areas = dfcand[,3] 
+
+areas = gsub("(CATALUNA)|(GALICIA)|(PAIS VASCO)|(NAVARRA)|(CANARIAS)","Revendications fortes",areas)
+
+areas = gsub("(COMUNIDAD VALENCIANA)|(ARAGON)|(ILLES BALEARS)|(ASTURIAS)|(ANDALUCIA)","Revendications faibles",areas)
+
+areas = gsub("^[^(Revendications)].*","Pas de revendications",areas) 
+
+dfareas = data.frame(score=cand_scores, party=index, region=ordered_regions, area=areas)
+
+
+
+
+### Hist by party and by region
+pdf("/home/noisette/Recherche memoire/Programming/spanish-elections/data-analysis/Graphs/histmodel1abyarea.pdf")
+par(mfrow=c(3,3), oma = c(0, 0, 0, 0))
+lapply(party_number, function(n) {
+    lapply(as.character(unique(dfareas[dfareas$party == n & dfareas$score > 0,]$area)), function(area) {
+        minxlim = min(pscores[n],dfareas[dfareas$party == n & dfareas$area == area & dfareas$score>0,]$score)
+        maxxlim = max(pscores[n],dfareas[dfareas$party == n & dfareas$area == area & dfareas$score>0,]$score)
+        hist(dfareas[dfareas$party == n & dfareas$area == area & dfareas$score>0,]$score, main=c(parties[n],area),col.main=colors[n], xlim=c(minxlim,maxxlim), xlab="", ylab="")
+        abline(v=pscores[n], col=colors[n])
+    })})
+dev.off()
+
+

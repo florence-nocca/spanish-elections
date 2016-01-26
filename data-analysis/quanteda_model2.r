@@ -131,3 +131,35 @@ lapply(party_number, function(n) {
     return(plot)
 })
 dev.off()
+
+### 
+### Predict wordscores
+parties_scoresREG = c(7, 4, 7.5, 8, 2.5, 3) ## Decentralisation scale
+model2a = predictWordscores(regionCorpus, parties_scores, region_docs)
+
+## y-axis
+len_reg = length(region_scores[region_scores>0])
+
+### Scores for plot
+scores = model2a@textscores$textscore_raw
+## Keep only from 7th element
+region_scores = scores[7:length(scores)]
+## Extract parties' scores
+pscores = scores[1:6]
+## Create a vector containing regions' number per party
+party_list = c("Cs","PSOE", "PP", "UPyD", "PODEMOS", "IU-UP")
+reg_number = unlist(lapply(party_list, function(party) return(length(region_tweets[region_tweets$Group.2 == party,]$Group.2))))
+
+## Plot
+png("/home/noisette/Recherche memoire/Programming/spanish-elections/data-analysis/Graphs/plotmodel2a.png", width=width * ratio, height=height * ratio, res=dpi)
+plot(x=region_scores[region_scores>0], y=1:len_reg, pch=1, cex=0, xlab="Scores", ylab="Index des documents", main="Positionnement des candidats par région par rapport aux partis", sub="De 0 (favorable à la décentralisation) à 10 (défavorable)", cex.main=1)
+text(x=region_scores[region_scores>0], y=1:length(labels[region_scores>0]), labels=labels[region_scores>0], cex=0.5, col=rep(colors, reg_number)[region_scores>0])
+abline(v=pscores, col=colors)
+legend(x=3.8, y=50, party_list, col=colors, fill=colors, bg="white", cex=0.7)
+legend(x=3.8, y=30, reg_legend, cex=0.6, pt.cex=1, bg="white", ncol=2)
+dev.off()
+
+## Plots for each party
+reg_scores = cbind(rep(party_list, reg_number), region_scores)
+sep_parties = lapply(party_list, function(party) return(reg_scores[reg_scores[,1] == party,][,2]))
+party_number = (1:length(list_scores))

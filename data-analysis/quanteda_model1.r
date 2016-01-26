@@ -69,13 +69,13 @@ cand_parties = rep(party_list, cand_number)
 
 ## Set parties' scores
 ## parties = c("Ciudadanos","PSOE","PP","UPyD","Podemos","Izquierda Unida")
-parties_scores = c(5, 4, 7, 6, 2, 1) ## Left-Right scale
+parties_scoresLR = c(5, 4, 7, 6, 2, 1) ## Left-Right scale
 
 ## Create the corpus
 Corpus = corpus(c(party_tweets, candidates), enc="UTF-8")
 
 ## Predict wordscores
-model1 = predictWordscores(Corpus, parties_scores, candidates)
+model1 = predictWordscores(Corpus, parties_scoresLR, candidates)
 
 
 ### Graphical representations
@@ -137,4 +137,47 @@ lapply(party_number, function(n) {
         hist(dfcand[dfcand$party == n & dfcand$region == region & dfcand$score>0,]$score, main=c(parties[n],region),col.main=colors[n], xlim=c(minxlim,maxxlim), xlab="", ylab="")
         abline(v=pscores[n], col=colors[n])
     })})
+dev.off()
+
+### Variations (scores on other dimensions)
+## Set parties' scores
+## parties = c("Ciudadanos","PSOE","PP","UPyD","Podemos","Izquierda Unida")
+parties_scoresREG = c(7, 4, 7.5, 8, 2.5, 3) ## Decentralisation scale
+
+## Predict wordscores
+model1a = predictWordscores(Corpus, parties_scoresREG, candidates)
+
+## Scores to plot
+scores = model1a@textscores$textscore_raw
+## Keep only from 7th element
+cand_scores = scores[7:length(scores)]
+## Extract parties' scores
+pscores = scores[1:6]
+
+### Plot
+## y-axis
+len = length(cand_scores[cand_scores>0])
+
+png("/home/noisette/Recherche memoire/Programming/spanish-elections/data-analysis/Graphs/plotmodel1a.png", width=width * ratio, height=height * ratio, res=dpi)
+plot(x=cand_scores[cand_scores>0], y=1:len, col=rep(colors, cand_number)[cand_scores>0], xlab="Scores", ylab="Index des candidats", main="Positionnement des candidats sur la décentralisation par rapport aux partis", sub="(0 = favorable à la décentralisation, 10 = opposé)", cex.main=1.5)
+abline(v=pscores, col=colors)
+legend(x=6.5, y=250, c("Cs", "PSOE", "PP", "UPyD", "Podemos", "IU-UP"), fill=colors)
+dev.off()
+
+### Histograms
+## list of scores by party
+index = rep(1:length(cand_number), cand_number)
+list_scores = lapply(1:6, function(party) return(cand_scores[index == party]))
+party_number = (1:length(list_scores))
+
+## Histograms by party
+png("/home/noisette/Recherche memoire/Programming/spanish-elections/data-analysis/Graphs/histmodel1a.png", width=width * ratio, height=height * ratio, res=dpi)
+par(mfrow=c(3,3), oma = c(0, 0, 10, 0))
+lapply(party_number, function(n) {
+    xlim_min = min(pscores[n],unlist(list_scores[n])[unlist(list_scores[n])>0])
+    xlim_max = max(pscores[n],unlist(list_scores[n])[unlist(list_scores[n])>0])
+    hist(unlist(list_scores[n])[unlist(list_scores[n])>0], main=parties[n], xlab="", ylab="", xlim=c(xlim_min,xlim_max))
+    abline(v=pscores[n], col=colors[n])
+})
+title("Positionnement des candidats sur la décentralisation par rapport à leur parti (0 = favorable, 10 = opposé)", cex.main = 1.5, outer = TRUE)
 dev.off()

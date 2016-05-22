@@ -1,6 +1,7 @@
 # What is spanish-elections?
 [spanish-elections](https://github.com/florence-nocca/spanish-elections) is part of my Master's thesis in political science that I am currently writing. 
 
-For my thesis, I examine candidate/party relations on social media during an electoral campaign to analyze the impact of these new technologies on the territorial organization of political parties. My fieldwork is the electoral campaigns for 2015 Spanish general elections on Twitter. Concretely, I am looking at tweets issued by candidates to compare their political/policy positions with those of their political parties, both at the regional and national levels (tweets issued on the regional and the national accounts of the parties plus party manifesto).
+### Thesis' abstract:
+This Master’s Thesis explores the relations between candidates and parties on social media during the 2015 Spanish general elections campaign. Thanks to this approach, we analyse the impact of new technologies on the territorial organisation of political parties. We base our analysis on a database containing all the tweets posted by the national and regional accounts of the four main Spanish parties and their candidates during the official campaign. We propose three measures of proximity between the candidates and their parties using the wordscores document scaling technique, graph theory and wordclouds. We find that, despite an overall centralisation of the campaign on Twitter, the party still matters to explain candidates/party relationships. More precisely, we identify three types of territorial organisation, on a hierarchy-stratarchy continuum.
 
 For more details, please report to the [spanish-elections' wiki](https://github.com/florence-nocca/spanish-elections/wiki/).
